@@ -1,418 +1,144 @@
 <!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Admin Document Control</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Mengimpor font modern 'Inter' -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-      body { 
-        background-color: #f4f7f6; 
-        padding: 40px 20px; 
-        font-family: 'Inter', sans-serif; 
-        color: #334155;
-      }
-      .container { 
-        max-width: 800px; 
-        background: white; 
-        padding: 40px; 
-        border-radius: 16px; 
-        box-shadow: 0 10px 40px rgba(0,0,0,0.06); 
-      }
-      
-      /* Header & Logo Styles */
-      .header-section {
-        text-align: center;
-        margin-bottom: 35px;
-        padding-bottom: 25px;
-        border-bottom: 2px dashed #e2e8f0;
-      }
-      .logo-img { 
-        height: 75px; 
-        object-fit: contain; 
-        margin-bottom: 20px;
-      }
-      .brand-title { 
-        font-weight: 700; 
-        color: #0f172a; 
-        font-size: 1.6rem; 
-        letter-spacing: -0.5px;
-        margin-bottom: 5px;
-      }
-      .subtitle { 
-        color: #64748b; 
-        font-size: 0.85rem; 
-        font-weight: 600; 
-        text-transform: uppercase; 
-        letter-spacing: 1px;
-        margin: 0;
-      }
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Admin Document Control</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{background:#f4f7f6;font-family:'Inter',sans-serif;color:#334155}
+.box{background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.06);padding:28px}
+.sec{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:16px}
+.sec h6{color:#0ea5e9;font-weight:700;text-transform:uppercase;font-size:.85rem;margin-bottom:14px}
+label{font-size:.85rem;font-weight:600;color:#475569}
+.nav-link{font-weight:600}
+</style></head><body>
+<!-- LOGIN -->
+<div id="vLogin" class="container py-5" style="max-width:420px"><div class="box text-center">
+<img src="https://lh3.googleusercontent.com/u/0/d/1dKSdWBIHzzWDTfnquufOammtyuimcZ7A" height="70" class="mb-3" alt="Logo">
+<h5 class="fw-bold">Portal Admin Document Control</h5><p class="text-muted small">Masuk dengan akun yang diberikan Admin HSE</p>
+<form onsubmit="doLogin(event)" class="text-start">
+<label>Username</label><input id="lu" class="form-control mb-3" autocomplete="username" required>
+<label>Password</label><input id="lp" type="password" class="form-control mb-3" autocomplete="current-password" required>
+<button class="btn btn-primary w-100" id="lb">Masuk</button><div id="lm" class="text-danger small fw-bold mt-3 text-center"></div></form></div></div>
 
-      /* Form Section Styles */
-      .form-section {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 25px;
-      }
-      .section-title {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #0ea5e9;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-      }
-      
-      /* Input Styles */
-      .form-label-custom { 
-        font-size: 0.85rem; 
-        font-weight: 600; 
-        color: #475569; 
-        margin-bottom: 8px;
-      }
-      .form-control, .form-select { 
-        border-radius: 8px; 
-        border: 1px solid #cbd5e1; 
-        font-size: 0.95rem; 
-        padding: 10px 15px;
-        box-shadow: none;
-        transition: all 0.2s;
-      }
-      .form-control:focus, .form-select:focus { 
-        border-color: #3b82f6; 
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); 
-      }
-      
-      /* Animations */
-      #divRevisiKe, #divKetRevisi { transition: all 0.3s ease; }
-      
-      /* Button Styles */
-      .btn-primary { 
-        background-color: #2563eb; 
-        border: none; 
-        border-radius: 8px; 
-        font-weight: 600; 
-        letter-spacing: 0.5px; 
-        padding: 12px;
-        transition: all 0.3s ease; 
-      }
-      .btn-primary:hover { 
-        background-color: #1d4ed8; 
-        transform: translateY(-2px); 
-        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25); 
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      
-      <!-- Header Section -->
-      <div class="header-section">
-        <img src="https://lh3.googleusercontent.com/u/0/d/1dKSdWBIHzzWDTfnquufOammtyuimcZ7A" alt="Logo SMT" class="logo-img">
-        <h3 class="brand-title">Portal Admin Document Control</h3>
-        <p class="subtitle">Sistem Manajemen Terintegrasi Priamanaya Group</p>
-      </div>
-      
-      <form id="uploadForm" onsubmit="handleFormSubmit(event)">
-        
-        <!-- SECTION 1: Pengaturan Upload -->
-        <div class="form-section">
-          <div class="section-title">1. Konfigurasi Sistem</div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label-custom text-primary">Entitas Perusahaan</label>
-              <select class="form-select" name="perusahaan" id="perusahaanSelect" onchange="updatePlaceholder()" required>
-                <option value="" disabled selected>-- Pilih Perusahaan --</option>
-                <option value="DP">PT Dizamatra Powerindo (DP)</option>
-                <option value="PE">PT Priamanaya Energi (PE)</option>
-                <option value="AM">PT Asta Maharanita (AM)</option>
-              </select>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label-custom text-primary">Jenis Upload</label>
-              <select class="form-select" name="jenisUpload" id="jenisUploadSelect" onchange="toggleRevisiFields()" required>
-                <option value="" disabled selected>-- Pilih Jenis --</option>
-                <option value="Baru">Dokumen Baru</option>
-                <option value="Revisi">Revisi Dokumen</option>
-              </select>
-            </div>
-          </div>
-        </div>
+<!-- APP -->
+<div id="vApp" class="container py-4" style="max-width:1000px;display:none"><div class="box">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+<div><h5 class="fw-bold mb-0">Portal Admin Document Control</h5><small class="text-muted" id="who"></small></div>
+<button class="btn btn-outline-secondary btn-sm" onclick="logout()">Keluar</button></div>
+<ul class="nav nav-tabs mb-3" id="tabs"></ul>
 
-        <!-- SECTION 2: Identitas Dokumen -->
-        <div class="form-section">
-          <div class="section-title">2. Identitas Dokumen</div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label-custom">Nomor Dokumen</label>
-              <input type="text" class="form-control" name="noDokumen" id="inputNoDokumen" placeholder="Misal: P-DP-TL-HSE-01" onblur="validasiNomorLangsung()" required>
-              <div id="nomorAlert" class="mt-1" style="font-size: 0.85rem;"></div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label-custom">Judul Dokumen</label>
-              <input type="text" class="form-control" name="judulDokumen" placeholder="Masukkan judul dokumen..." required>
-            </div>
-          </div>
+<!-- TAB INPUT -->
+<div id="t-input"><form id="f" onsubmit="submitDok(event)">
+<div class="sec"><h6>1. Konfigurasi</h6><div class="row g-3">
+<div class="col-md-6"><label>Entitas</label><select class="form-select" name="perusahaan" id="fEnt" required></select></div>
+<div class="col-md-6"><label>Jenis Upload</label><select class="form-select" name="jenisUpload" id="fJenis" onchange="toggleRev()" required><option value="">-- Pilih --</option><option>Baru</option><option>Revisi</option></select></div></div></div>
+<div class="sec"><h6>2. Identitas Dokumen</h6><div class="row g-3">
+<div class="col-md-6"><label>Nomor Dokumen</label><input class="form-control" name="noDokumen" id="fNo" onblur="cek()" placeholder="P-DP-TL-HSE-01" required><div id="nAlert" class="small fw-bold mt-1"></div></div>
+<div class="col-md-6"><label>Judul</label><input class="form-control" name="judulDokumen" required></div>
+<div class="col-md-4"><label>Kategori</label><select class="form-select" name="kategori" id="fKat" required></select></div>
+<div class="col-md-4"><label>Departemen</label><select class="form-select" name="departemen" id="fDep" required></select></div>
+<div class="col-md-4"><label>Referensi Standar</label><select class="form-select" name="standarIso" id="fIso" required></select></div></div></div>
+<div class="sec"><h6>3. Status & Approval</h6><div class="row g-3">
+<div class="col-md-4" id="dRev"><label>Revisi Ke-</label><input type="number" min="0" value="0" class="form-control" name="revisiKe" id="fRev" required></div>
+<div class="col-md-4"><label>Tanggal Terbit</label><input type="date" class="form-control" name="tglTerbit" required></div>
+<div class="col-md-4"><label>Status</label><select class="form-select" name="status" id="fSt" required></select></div>
+<div class="col-md-12"><label>Approval Oleh</label><select class="form-select" name="approval" required><option value="">-- Pilih --</option><option>KTT</option><option>Direksi</option></select></div>
+<div class="col-12" id="dKet"><label>Alasan Revisi</label><textarea class="form-control" name="ketRevisi" id="fKet" rows="2"></textarea></div></div></div>
+<div class="sec"><label>📁 File PDF (Scan TTD Basah)</label><input type="file" class="form-control" id="fFile" accept="application/pdf" required></div>
+<button class="btn btn-primary w-100" id="fBtn">Unggah & Simpan Dokumen</button><div id="fMsg" class="mt-3 text-center fw-bold"></div></form></div>
 
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label-custom">Kategori</label>
-              <select class="form-select" name="kategori" required>
-                <option value="" disabled selected>-- Pilih Kategori --</option>
-                <option value="SOP">SOP</option>
-                <option value="Instruksi Kerja">Instruksi Kerja</option>
-                <option value="Formulir">Formulir</option>
-              </select>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label-custom">Departemen</label>
-              <select class="form-select" name="departemen" required>
-                <option value="" disabled selected>-- Pilih Departemen --</option>
-                <option value="Warehouse & Fuel">Warehouse & Fuel</option>
-                <option value="Finance & Accounting">Finance & Accounting</option>
-                <option value="Civil Project">Civil Project</option>
-                <option value="Legal">Legal</option>
-                <option value="HRGA & Security">HRGA & Security</option>
-                <option value="Technical Services">Technical Services</option>
-                <option value="Produksi">Produksi</option>
-                <option value="Angkutan & Stasiun">Angkutan & Stasiun</option>
-                <option value="Plant Maintenance">Plant Maintenance</option>
-                <option value="Health, Safety & Environment">Health, Safety & Environment</option>
-                <option value="Pelabuhan & Angkutan">Pelabuhan & Angkutan</option>
-                <option value="Lahan Eksternal & CSR">Lahan Eksternal & CSR</option>
-              </select>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label-custom">Referensi Standar</label>
-              <select class="form-select" name="standarIso" required>
-                <option value="" disabled selected>-- Pilih Standar --</option>
-                <option value="ISO (Mandatory)">ISO (Mandatory)</option>
-                <option value="SMKP (Mandatory)">SMKP (Mandatory)</option>
-                <option value="ISO & SMKP (Integrasi)">ISO & SMKP (Integrasi)</option>
-                <option value="Non-Mandatory">Non-Mandatory</option>
-              </select>
-            </div>
-          </div>
-        </div>
+<!-- TAB DAFTAR / KOREKSI -->
+<div id="t-daftar" style="display:none"><input class="form-control mb-3" placeholder="Cari nomor / judul / departemen..." oninput="renderList(this.value)">
+<div class="table-responsive"><table class="table table-hover table-sm align-middle"><thead class="table-light"><tr><th>No. Dokumen</th><th>Judul</th><th>Kategori</th><th>Dept.</th><th>Standar</th><th>Rev</th><th>Status</th><th></th></tr></thead><tbody id="lb2"></tbody></table></div></div>
 
-        <!-- SECTION 3: Status & Approval -->
-        <div class="form-section">
-          <div class="section-title">3. Status & Approval</div>
-          <div class="row">
-            <div class="col-md-4 mb-3" id="divRevisiKe">
-              <label class="form-label-custom">Revisi Ke-</label>
-              <input type="number" class="form-control" name="revisiKe" id="inputRevisiKe" min="0" value="0" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label-custom">Tanggal Terbit</label>
-              <input type="date" class="form-control" name="tglTerbit" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label-custom">Status Dokumen</label>
-              <select class="form-select" name="status" required>
-                <option value="" disabled selected>-- Pilih Status --</option>
-                <option value="Berlaku">Berlaku</option>
-                <option value="Obsolete">Obsolete</option>
-              </select>
-            </div>
-          </div>
+<!-- TAB USER -->
+<div id="t-user" style="display:none"><form onsubmit="saveUser(event)" class="row g-2 mb-3 sec">
+<div class="col-md-3"><label>Username</label><input class="form-control" id="uU" required></div>
+<div class="col-md-3"><label>Nama</label><input class="form-control" id="uN" required></div>
+<div class="col-md-2"><label>Role</label><select class="form-select" id="uR"><option>PIC</option><option>HSE</option></select></div>
+<div class="col-md-4"><label>Departemen</label><select class="form-select" id="uD"></select></div>
+<div class="col-md-4"><label>Password (kosongkan jika tidak diubah)</label><input type="password" class="form-control" id="uP" minlength="8"></div>
+<div class="col-md-3"><label>Status</label><select class="form-select" id="uA"><option value="1">Aktif</option><option value="0">Nonaktif</option></select></div>
+<div class="col-md-3 d-flex align-items-end"><button class="btn btn-primary w-100">Simpan User</button></div></form>
+<div id="uMsg" class="fw-bold mb-2"></div>
+<table class="table table-sm"><thead><tr><th>Username</th><th>Nama</th><th>Role</th><th>Departemen</th><th>Aktif</th></tr></thead><tbody id="uB"></tbody></table></div>
 
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <label class="form-label-custom">Approval Oleh (Sesuai Matriks)</label>
-              <select class="form-select" name="approval" required>
-                <option value="" disabled selected>-- Pilih Approval --</option>
-                <option value="KTT">KTT</option>
-                <option value="Direksi">Direksi</option>
-              </select>
-            </div>
-          </div>
+<!-- TAB AUDIT -->
+<div id="t-audit" style="display:none"><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Waktu</th><th>User</th><th>Aksi</th><th>Dokumen</th><th>Detail</th></tr></thead><tbody id="aB"></tbody></table></div></div>
+</div></div>
 
-          <div class="row" id="divKetRevisi">
-            <div class="col-md-12 mb-2">
-              <label class="form-label-custom">Keterangan / Alasan Revisi</label>
-              <textarea class="form-control" name="ketRevisi" id="inputKetRevisi" rows="2" placeholder="Tuliskan secara singkat alasan revisi dokumen..."></textarea>
-            </div>
-          </div>
-        </div>
+<!-- MODAL KOREKSI -->
+<div class="modal fade" id="mEdit" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h6 class="modal-title" id="eT"></h6><button class="btn-close" data-bs-dismiss="modal"></button></div>
+<div class="modal-body row g-3">
+<div class="col-md-8"><label>Judul</label><input class="form-control" id="eJudul"></div>
+<div class="col-md-4"><label>Entitas</label><select class="form-select" id="eEnt"></select></div>
+<div class="col-md-4"><label>Kategori</label><select class="form-select" id="eKat"></select></div>
+<div class="col-md-4"><label>Departemen</label><select class="form-select" id="eDep"></select></div>
+<div class="col-md-4"><label>Referensi Standar</label><select class="form-select" id="eIso"></select></div>
+<div class="col-md-4"><label>Revisi Ke-</label><input type="number" min="0" class="form-control" id="eRev"></div>
+<div class="col-md-4"><label>Tanggal Terbit</label><input type="date" class="form-control" id="eTgl"></div>
+<div class="col-md-4"><label>Status</label><select class="form-select" id="eSt"></select></div>
+<div class="col-12 small text-muted">Setiap koreksi dicatat di Audit Log (siapa, kapan, nilai lama → baru). Mengganti file PDF dilakukan lewat Upload → Revisi.</div>
+<div id="eMsg" class="fw-bold"></div></div>
+<div class="modal-footer"><button class="btn btn-primary" onclick="saveEdit()">Simpan Koreksi</button></div></div></div></div>
 
-        <!-- SECTION 4: File Upload -->
-        <div class="form-section bg-white border-primary border-opacity-25 shadow-sm">
-          <label class="form-label-custom text-primary mb-2">📁 Upload File PDF (Scan TTD Basah)</label>
-          <input type="file" class="form-control" name="fileDokumen" id="inputFileDokumen" accept="application/pdf" style="padding: 12px;" required>
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+var API = "https://script.google.com/macros/s/AKfycbylR3zjgPuWMG8jkw83idpNFF-hkf6a-CVJtpV5mSizuVy7f81Cw8pddx3yMh4VqaDHGQ/exec"; // satu URL untuk admin & karyawan
+var ENT = [["DP","PT Dizamatra Powerindo (DP)"],["PE","PT Priamanaya Energi (PE)"],["AM","PT Asta Maharanita (AM)"]];
+var DEPT = ["Warehouse & Fuel","Finance & Accounting","Civil Project","Legal","HRGA & Security","Technical Services","Produksi","Angkutan & Stasiun","Plant Maintenance","Health, Safety & Environment","Pelabuhan & Angkutan","Lahan Eksternal & CSR"];
+var KAT = ["SOP","Instruksi Kerja","Formulir"], ISO = ["ISO (Mandatory)","SMKP (Mandatory)","ISO & SMKP (Integrasi)","Non-Mandatory"], ST = ["Berlaku","Obsolete"];
+var S = JSON.parse(sessionStorage.getItem('sess') || 'null'), DOCS = [], curNo = '';
+var $ = function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function opts(list, first){return (first?'<option value="">-- Pilih --</option>':'')+list.map(function(x){return Array.isArray(x)?'<option value="'+x[0]+'">'+x[1]+'</option>':'<option>'+esc(x)+'</option>'}).join('')}
+function api(action, d){return fetch(API,{method:'POST',body:JSON.stringify(Object.assign({action:action,token:S&&S.token},d||{}))}).then(function(r){return r.json()}).then(function(r){if(r.code==='AUTH'){logout(true)}return r})}
 
-        <button type="submit" class="btn btn-primary w-100 mt-2" id="btnSubmit">Unggah & Simpan Dokumen</button>
-        <div id="pesanStatus" class="mt-4 text-center fw-bold"></div>
-        
-      </form>
-    </div>
+function doLogin(e){e.preventDefault();$('lb').disabled=true;$('lm').textContent='';
+ api('login',{username:$('lu').value.trim(),password:$('lp').value}).then(function(r){$('lb').disabled=false;
+  if(!r.success){$('lm').textContent=r.message;return}
+  S={token:r.token,user:r.user};sessionStorage.setItem('sess',JSON.stringify(S));start()}).catch(function(){$('lb').disabled=false;$('lm').textContent='Gagal terhubung ke server.'})}
+function logout(silent){if(S&&!silent)api('logout');S=null;sessionStorage.removeItem('sess');$('vApp').style.display='none';$('vLogin').style.display='block';$('lp').value=''}
 
-    <script>
-      // =========================================================================
-      // PENTING: GANTI URL DI BAWAH INI DENGAN URL DEPLOY APPS SCRIPT ANDA (PORTAL ADMIN)
-      // =========================================================================
-      var API_URL = "https://script.google.com/macros/s/AKfycbylR3zjgPuWMG8jkw83idpNFF-hkf6a-CVJtpV5mSizuVy7f81Cw8pddx3yMh4VqaDHGQ/exec";
+function start(){
+ $('vLogin').style.display='none';$('vApp').style.display='block';
+ var u=S.user,hse=u.role==='HSE';$('who').textContent=u.nama+' • '+u.role+(hse?'':' • '+u.departemen);
+ $('fEnt').innerHTML=opts(ENT,1);$('fKat').innerHTML=opts(KAT,1);$('fIso').innerHTML=opts(ISO,1);$('fSt').innerHTML=opts(ST,1);
+ $('fDep').innerHTML=hse?opts(DEPT,1):opts([u.departemen]);
+ $('eEnt').innerHTML=opts(ENT);$('eKat').innerHTML=opts(KAT);$('eDep').innerHTML=opts(DEPT);$('eIso').innerHTML=opts(ISO);$('eSt').innerHTML=opts(ST);$('uD').innerHTML=opts(DEPT);
+ var T=[['input','Upload Dokumen']].concat(hse?[['daftar','Daftar & Koreksi'],['user','Pengguna'],['audit','Audit Log']]:[]);
+ $('tabs').innerHTML=T.map(function(t,i){return '<li class="nav-item"><a href="#" class="nav-link'+(i?'':' active')+'" onclick="tab(\''+t[0]+'\',this);return false">'+t[1]+'</a></li>'}).join('');
+ tab('input');toggleRev()}
+function tab(n,el){['input','daftar','user','audit'].forEach(function(x){var d=$('t-'+x);if(d)d.style.display=x===n?'block':'none'});
+ if(el){[].forEach.call(document.querySelectorAll('#tabs .nav-link'),function(a){a.classList.remove('active')});el.classList.add('active')}
+ if(n==='daftar')loadList();if(n==='user')loadUsers();if(n==='audit')loadAudit()}
 
-      // Fungsi UI: Memperbarui Placeholder
-      function updatePlaceholder() {
-        var kode = document.getElementById('perusahaanSelect').value;
-        if (!kode) kode = "DP";
-        document.getElementById('inputNoDokumen').placeholder = "Misal: P-" + kode + "-TL-HSE-01";
-      }
+function toggleRev(){var r=$('fJenis').value==='Revisi';$('dRev').style.display=r?'block':'none';$('dKet').style.display=r?'block':'none';$('fKet').required=r;if(!r)$('fRev').value=0;else if(+$('fRev').value===0)$('fRev').value=1;cek()}
+function cek(){var no=$('fNo').value.trim(),j=$('fJenis').value,a=$('nAlert');if(!no||!j){a.innerHTML='';return}
+ a.innerHTML='<span class="text-secondary">⏳ Mengecek...</span>';$('fBtn').disabled=true;
+ api('cekDokumen',{noDokumen:no}).then(function(r){var bad=(j==='Baru'&&r.exists)||(j==='Revisi'&&!r.exists);
+  a.innerHTML=bad?'<span class="text-danger">❌ '+(r.exists?'Sudah terdaftar, gunakan Revisi.':'Belum terdaftar, gunakan Dokumen Baru.')+'</span>':'<span class="text-success">✅ Nomor valid.</span>';$('fBtn').disabled=bad})}
+function submitDok(e){e.preventDefault();var f=$('f'),b=$('fBtn'),m=$('fMsg'),file=$('fFile').files[0];if(!file)return;
+ b.disabled=true;b.textContent='Mengunggah... mohon tunggu ⏳';m.textContent='';m.className='mt-3 text-center fw-bold text-primary';
+ var d={};new FormData(f).forEach(function(v,k){d[k]=v});
+ var rd=new FileReader();rd.onload=function(ev){d.fileBase64=ev.target.result.split(',')[1];d.fileName=file.name;d.fileMimeType=file.type;
+  api('uploadDokumen',{data:d}).then(function(r){m.textContent=r.message;m.className='mt-3 text-center fw-bold text-'+(r.success?'success':'danger');if(r.success){f.reset();toggleRev();$('nAlert').innerHTML=''}b.disabled=false;b.textContent='Unggah & Simpan Dokumen'})
+  .catch(function(){m.textContent='Kesalahan koneksi.';m.className='mt-3 text-center fw-bold text-danger';b.disabled=false;b.textContent='Unggah & Simpan Dokumen'})};rd.readAsDataURL(file)}
 
-      // Fungsi UI: Menampilkan/Menyembunyikan Kolom Revisi
-      function toggleRevisiFields() {
-        var jenis = document.getElementById('jenisUploadSelect').value;
-        var divRevisiKe = document.getElementById('divRevisiKe');
-        var divKetRevisi = document.getElementById('divKetRevisi');
-        var inputRevisiKe = document.getElementById('inputRevisiKe');
-        var inputKetRevisi = document.getElementById('inputKetRevisi');
+// --- Daftar & koreksi (HSE)
+function loadList(){fetch(API).then(function(r){return r.json()}).then(function(r){DOCS=r.docs;renderList('')})}
+function renderList(q){q=(q||'').toLowerCase();$('lb2').innerHTML=DOCS.filter(function(d){return (d.noDokumen+d.judul+d.departemen).toLowerCase().indexOf(q)>-1}).map(function(d){
+ return '<tr><td>'+esc(d.noDokumen)+'</td><td>'+esc(d.judul)+'</td><td>'+esc(d.kategori)+'</td><td>'+esc(d.departemen)+'</td><td>'+esc(d.standarIso)+'</td><td>'+esc(d.revisiKe)+'</td><td>'+esc(d.status)+'</td><td><button class="btn btn-sm btn-outline-primary" onclick="openEdit(\''+esc(d.noDokumen).replace(/'/g,"\\'")+'\')">Koreksi</button></td></tr>'}).join('')}
+function openEdit(no){var d=DOCS.filter(function(x){return x.noDokumen===no})[0];curNo=no;$('eT').textContent='Koreksi: '+no;$('eMsg').textContent='';
+ $('eJudul').value=d.judul;$('eEnt').value=d.perusahaan;$('eKat').value=d.kategori;$('eDep').value=d.departemen;$('eIso').value=d.standarIso;$('eRev').value=d.revisiKe;$('eTgl').value=d.tglTerbit;$('eSt').value=d.status;
+ bootstrap.Modal.getOrCreateInstance($('mEdit')).show()}
+function saveEdit(){api('editDokumen',{noDokumen:curNo,changes:{judul:$('eJudul').value,perusahaan:$('eEnt').value,kategori:$('eKat').value,departemen:$('eDep').value,standarIso:$('eIso').value,revisiKe:$('eRev').value,tglTerbit:$('eTgl').value,status:$('eSt').value}}).then(function(r){
+ $('eMsg').className='fw-bold text-'+(r.success?'success':'danger');$('eMsg').textContent=r.message;if(r.success)setTimeout(function(){bootstrap.Modal.getInstance($('mEdit')).hide();loadList()},900)})}
 
-        if (jenis === 'Baru') {
-          divRevisiKe.style.display = 'none';
-          divKetRevisi.style.display = 'none';
-          inputRevisiKe.value = 0; 
-          inputKetRevisi.value = "";
-          inputKetRevisi.required = false; 
-        } else if (jenis === 'Revisi') {
-          divRevisiKe.style.display = 'block';
-          divKetRevisi.style.display = 'block';
-          if(inputRevisiKe.value == 0) inputRevisiKe.value = 1;
-          inputKetRevisi.required = true; 
-        }
-        validasiNomorLangsung();
-      }
+// --- User & audit
+function loadUsers(){api('listUsers').then(function(r){$('uB').innerHTML=(r.users||[]).map(function(u){return '<tr style="cursor:pointer" onclick="$(\'uU\').value=\''+esc(u.username)+'\';$(\'uN\').value=\''+esc(u.nama)+'\';$(\'uR\').value=\''+u.role+'\';$(\'uD\').value=\''+esc(u.departemen)+'\';$(\'uA\').value=\''+(u.aktif===true||u.aktif==='TRUE'?1:0)+'\'"><td>'+esc(u.username)+'</td><td>'+esc(u.nama)+'</td><td>'+u.role+'</td><td>'+esc(u.departemen)+'</td><td>'+(u.aktif===true||u.aktif==='TRUE'?'Ya':'Tidak')+'</td></tr>'}).join('')})}
+function saveUser(e){e.preventDefault();api('saveUser',{user:{username:$('uU').value.trim(),nama:$('uN').value,role:$('uR').value,departemen:$('uD').value,password:$('uP').value,aktif:$('uA').value==='1'}}).then(function(r){$('uMsg').className='fw-bold text-'+(r.success?'success':'danger');$('uMsg').textContent=r.message;if(r.success){$('uP').value='';loadUsers()}})}
+function loadAudit(){api('listAudit').then(function(r){$('aB').innerHTML=(r.log||[]).map(function(l){return '<tr>'+l.map(function(c){return '<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join('')})}
 
-      // -------------------------------------------------------------------------
-      // FUNGSI 1: Validasi Ketersediaan Nomor (Menggantikan google.script.run)
-      // -------------------------------------------------------------------------
-      function validasiNomorLangsung() {
-        var noDok = document.getElementById('inputNoDokumen').value;
-        var jenis = document.getElementById('jenisUploadSelect').value;
-        var alertText = document.getElementById('nomorAlert');
-        var btn = document.getElementById('btnSubmit');
-
-        if(!noDok || !jenis) {
-          alertText.innerHTML = "";
-          return;
-        }
-
-        alertText.innerHTML = '<span class="text-secondary fw-bold">⏳ Mengecek ketersediaan dokumen...</span>';
-        btn.disabled = true;
-
-        // Mengirim request validasi ke Apps Script
-        fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: "cekDokumen", noDokumen: noDok })
-        })
-        .then(response => response.json())
-        .then(data => {
-          var isExist = data.exists; // Nilai true/false dari database
-          if (jenis === 'Baru' && isExist) {
-            alertText.innerHTML = '<span class="text-danger fw-bold">❌ Gagal: Dokumen sudah terdaftar. Gunakan opsi Revisi.</span>';
-            btn.disabled = true; 
-          } else if (jenis === 'Revisi' && !isExist) {
-            alertText.innerHTML = '<span class="text-danger fw-bold">❌ Gagal: Dokumen belum terdaftar. Gunakan opsi Dokumen Baru.</span>';
-            btn.disabled = true; 
-          } else {
-            alertText.innerHTML = '<span class="text-success fw-bold">✅ Nomor dokumen valid dan bisa digunakan.</span>';
-            btn.disabled = false; 
-          }
-        })
-        .catch(error => {
-          alertText.innerHTML = '<span class="text-danger fw-bold">❌ Gagal terhubung ke database.</span>';
-          console.error('Error:', error);
-        });
-      }
-
-      // -------------------------------------------------------------------------
-      // FUNGSI 2: Menangani Proses Upload Form dan Konversi File ke Base64
-      // -------------------------------------------------------------------------
-      function handleFormSubmit(event) {
-        event.preventDefault();
-        
-        var form = document.getElementById('uploadForm');
-        var btn = document.getElementById('btnSubmit');
-        var pesan = document.getElementById('pesanStatus');
-        
-        btn.disabled = true;
-        btn.innerHTML = "Mengekstrak dan Mengunggah... Mohon tunggu ⏳";
-        pesan.innerHTML = "";
-        pesan.className = "mt-4 text-center fw-bold text-primary";
-
-        // Mengambil semua data inputan form
-        var formData = new FormData(form);
-        var dataObject = {};
-        formData.forEach((value, key) => {
-          if (key !== 'fileDokumen') {
-            dataObject[key] = value;
-          }
-        });
-
-        // Proses membaca file dan mengubahnya menjadi Base64
-        var fileInput = document.getElementById('inputFileDokumen');
-        var file = fileInput.files[0];
-
-        if (file) {
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            // Memisahkan metadata data URL (data:application/pdf;base64,...)
-            var base64String = e.target.result.split(',')[1]; 
-            
-            // Masukkan data file ke dalam objek payload
-            dataObject.fileBase64 = base64String;
-            dataObject.fileName = file.name;
-            dataObject.fileMimeType = file.type;
-
-            // Kirim ke Google Apps Script
-            kirimKeServer(dataObject, form, btn, pesan);
-          };
-          reader.readAsDataURL(file); // Mulai membaca file
-        } else {
-          pesan.innerHTML = "File dokumen wajib diisi!";
-          pesan.className = "mt-4 text-center fw-bold text-danger";
-          btn.disabled = false;
-          btn.innerHTML = "Unggah & Simpan Dokumen";
-        }
-      }
-
-      // Fungsi Eksekutor untuk mengirim JSON payload ke Apps Script
-      function kirimKeServer(dataObject, form, btn, pesan) {
-        fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: "uploadDokumen", data: dataObject })
-        })
-        .then(response => response.json())
-        .then(res => {
-          pesan.innerHTML = res.message;
-          if(res.success) {
-            pesan.className = "mt-4 text-center fw-bold text-success";
-            form.reset();
-            updatePlaceholder(); 
-            toggleRevisiFields(); 
-            document.getElementById('nomorAlert').innerHTML = ""; 
-          } else {
-            pesan.className = "mt-4 text-center fw-bold text-danger";
-          }
-          btn.disabled = false;
-          btn.innerHTML = "Unggah & Simpan Dokumen";
-        })
-        .catch(error => {
-          pesan.innerHTML = "Terjadi kesalahan koneksi saat mengunggah dokumen.";
-          pesan.className = "mt-4 text-center fw-bold text-danger";
-          btn.disabled = false;
-          btn.innerHTML = "Unggah & Simpan Dokumen";
-          console.error('Error:', error);
-        });
-      }
-    </script>
-  </body>
-</html>
+if(S)start();
+</script></body></html>
