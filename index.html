@@ -61,7 +61,7 @@ label{font-size:.85rem;font-weight:600;color:#475569}
 <div class="col-md-3"><label>Status</label><select class="form-select" id="uA"><option value="1">Aktif</option><option value="0">Nonaktif</option></select></div>
 <div class="col-md-3 d-flex align-items-end"><button class="btn btn-primary w-100">Simpan User</button></div></form>
 <div id="uMsg" class="fw-bold mb-2"></div>
-<table class="table table-sm"><thead><tr><th>Username</th><th>Nama</th><th>Role</th><th>Departemen</th><th>Aktif</th></tr></thead><tbody id="uB"></tbody></table></div>
+<table class="table table-sm"><thead><tr><th>Username</th><th>Nama</th><th>Role</th><th>Departemen</th><th>Aktif</th><th></th></tr></thead><tbody id="uB"></tbody></table></div>
 
 <!-- TAB AUDIT -->
 <div id="t-audit" style="display:none"><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Waktu</th><th>User</th><th>Aksi</th><th>Dokumen</th><th>Detail</th></tr></thead><tbody id="aB"></tbody></table></div></div>
@@ -84,7 +84,7 @@ label{font-size:.85rem;font-weight:600;color:#475569}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-var API = "https://script.google.com/macros/s/AKfycbylR3zjgPuWMG8jkw83idpNFF-hkf6a-CVJtpV5mSizuVy7f81Cw8pddx3yMh4VqaDHGQ/exec"; // satu URL untuk admin & karyawan
+var API = "https://script.google.com/macros/library/d/1hJIbffC2clzkBqXC37ChlhFn8xZXeX_Nj6EmLgPwmlsrk6kB67hiohSR/17"; // satu URL untuk admin & karyawan
 var ENT = [["DP","PT Dizamatra Powerindo (DP)"],["PE","PT Priamanaya Energi (PE)"],["AM","PT Asta Maharanita (AM)"]];
 var DEPT = ["Warehouse & Fuel","Finance & Accounting","Civil Project","Legal","HRGA & Security","Technical Services","Produksi","Angkutan & Stasiun","Plant Maintenance","Health, Safety & Environment","Pelabuhan & Angkutan","Lahan Eksternal & CSR"];
 var KAT = ["SOP","Instruksi Kerja","Formulir"], ISO = ["ISO (Mandatory)","SMKP (Mandatory)","ISO & SMKP (Integrasi)","Non-Mandatory"], ST = ["Berlaku","Obsolete"];
@@ -136,7 +136,15 @@ function saveEdit(){api('editDokumen',{noDokumen:curNo,changes:{judul:$('eJudul'
  $('eMsg').className='fw-bold text-'+(r.success?'success':'danger');$('eMsg').textContent=r.message;if(r.success)setTimeout(function(){bootstrap.Modal.getInstance($('mEdit')).hide();loadList()},900)})}
 
 // --- User & audit
-function loadUsers(){api('listUsers').then(function(r){$('uB').innerHTML=(r.users||[]).map(function(u){return '<tr style="cursor:pointer" onclick="$(\'uU\').value=\''+esc(u.username)+'\';$(\'uN\').value=\''+esc(u.nama)+'\';$(\'uR\').value=\''+u.role+'\';$(\'uD\').value=\''+esc(u.departemen)+'\';$(\'uA\').value=\''+(u.aktif===true||u.aktif==='TRUE'?1:0)+'\'"><td>'+esc(u.username)+'</td><td>'+esc(u.nama)+'</td><td>'+u.role+'</td><td>'+esc(u.departemen)+'</td><td>'+(u.aktif===true||u.aktif==='TRUE'?'Ya':'Tidak')+'</td></tr>'}).join('')})}
+var USERS=[];
+function isAktif(u){return u.aktif===true||u.aktif==='TRUE'}
+function loadUsers(){api('listUsers').then(function(r){USERS=r.users||[];$('uB').innerHTML=USERS.map(function(u,i){return '<tr><td>'+esc(u.username)+'</td><td>'+esc(u.nama)+'</td><td>'+esc(u.role)+'</td><td>'+esc(u.departemen)+'</td><td>'+(isAktif(u)?'Ya':'Tidak')+'</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary me-1" onclick="editUser('+i+')">Ubah</button><button class="btn btn-sm btn-outline-danger" onclick="resetPw('+i+')">Reset Password</button></td></tr>'}).join('')})}
+function editUser(i){var u=USERS[i];$('uU').value=u.username;$('uN').value=u.nama;$('uR').value=u.role;$('uD').value=u.departemen;$('uA').value=isAktif(u)?'1':'0';$('uP').value='';window.scrollTo(0,0)}
+function genPw(){var c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789',a=new Uint32Array(10);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(x){return c[x%c.length]}).join('')}
+function resetPw(i){var u=USERS[i];if(!confirm('Reset password akun "'+u.username+'"? Password lama tidak berlaku lagi.'))return;var pw=genPw();
+ api('saveUser',{user:{username:u.username,nama:u.nama,role:u.role,departemen:u.departemen,aktif:isAktif(u),password:pw}}).then(function(r){var m=$('uMsg');
+  if(!r.success){m.className='fw-bold text-danger';m.textContent=r.message;return}
+  m.className='fw-bold text-success';m.innerHTML='Password sementara untuk <b>'+esc(u.username)+'</b>: <code style="font-size:1.1rem">'+pw+'</code> <button class="btn btn-sm btn-outline-primary ms-2" onclick="navigator.clipboard.writeText(\''+pw+'\');this.textContent=\'Tersalin ✓\'">Salin</button><div class="small text-muted fw-normal">Berikan ke pemilik akun lewat jalur aman. Password ini hanya tampil sekali.</div>';m.scrollIntoView({block:'center'})})}
 function saveUser(e){e.preventDefault();api('saveUser',{user:{username:$('uU').value.trim(),nama:$('uN').value,role:$('uR').value,departemen:$('uD').value,password:$('uP').value,aktif:$('uA').value==='1'}}).then(function(r){$('uMsg').className='fw-bold text-'+(r.success?'success':'danger');$('uMsg').textContent=r.message;if(r.success){$('uP').value='';loadUsers()}})}
 function loadAudit(){api('listAudit').then(function(r){$('aB').innerHTML=(r.log||[]).map(function(l){return '<tr>'+l.map(function(c){return '<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join('')})}
 
